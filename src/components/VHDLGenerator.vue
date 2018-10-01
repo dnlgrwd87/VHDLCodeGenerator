@@ -1,29 +1,28 @@
 <template>
-  <div class="vhdl-generator content">
-    <div class="container">
-
-      <div class="file has-name is-pulled-left">
-        <label class="file-label">
-          <input class="file-input" type="file" accept=".csv" id="fileItem" @change="loadCSV">
-          <span class="file-cta">
-            <span class="file-label">
-              Choose a file…
-            </span>
+  <div class="vhdl-generator content container">
+    <div class="file has-name is-inline-block">
+      <label class="file-label">
+        <input class="file-input" type="file" accept=".csv" id="fileItem" @change="loadCSV">
+        <span class="file-cta">
+          <span class="file-label">
+            Choose a file…
           </span>
-          <span class="file-name">
-            <span v-if="file">{{ file.name }}</span>
-            <span v-else>No file selected</span>
-          </span>
-        </label>
-      </div>
-      <button class="button is-info" :disabled="!file" @click="parseCSV">Get code</button>
-
-      <div v-if="sourceCode.length > 0" class="code">
-        <hr>
-        <p v-html="sourceCode"></p>
-      </div>
-
+        </span>
+        <span class="file-name">
+          <span v-if="file">{{ file.name }}</span>
+          <span v-else>No file selected</span>
+        </span>
+      </label>
     </div>
+    <span>Delay:</span>
+    <input type="number" min="1" class="input number-input" v-model="delay">
+    <button class="button is-info" :disabled="!file" @click="parseCSV">Get code</button>
+
+    <div v-if="sourceCode.length > 0" class="code">
+      <hr>
+      <p v-html="sourceCode"></p>
+    </div>
+
   </div>
 </template>
 
@@ -35,20 +34,19 @@ export default {
   data() {
     return {
       sourceCode: "",
-      file: null
+      file: null,
+      delay: 100
     };
   },
   methods: {
     loadCSV() {
       this.file = document.getElementById("fileItem").files[0];
-      console.log(this.file);
     },
     parseCSV() {
       if (this.file) {
         Papa.parse(this.file, {
           complete: results => {
             this.sourceCode = this.getSourceCode(results.data);
-            console.log(this.sourceCode);
           }
         });
       }
@@ -64,7 +62,7 @@ export default {
           }
         }
         count++;
-        sourceCode += `<br>wait for 100 ns;<br><br>`;
+        sourceCode += `<br>wait for ${this.delay} ns;<br><br>`;
       }
       return sourceCode;
     }
@@ -73,9 +71,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .vhdl-generator {
-  margin-top: 35px;
+  margin: 35px auto 0;
+  text-align: center;
+  width: 80%;
 }
 
 .file {
@@ -86,7 +85,16 @@ export default {
   }
 }
 
+.number-input {
+  width: 5em;
+  margin-left: 15px;
+  margin-right: 35px;
+}
+
 .code {
   margin-top: 35px;
+  margin: 0 auto;
+  text-align: left !important;
 }
+
 </style>
