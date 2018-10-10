@@ -22,23 +22,25 @@
         <hr>
         <h3>Paste from table</h3>
         <div class="input-values-textarea">
-          <textarea v-model="inputValues" class="textarea" rows="8" placeholder="Paste text from input table"></textarea>
+          <textarea v-model="textareaInput" class="textarea" rows="8" placeholder="Paste text from input table"></textarea>
           <hr>
           <label>Delay:</label>
-          <input type="number" min="1" class="input number-input" v-model="delay">
+          <input type="number" min="1" class="input additional-input" v-model="delay">
           <br><br>
-          <label class="checkbox">
-            <input style="margin-right: 15px" v-model="addPrefix" type="checkbox">Add "SOURCE_" before port names
-          </label>
-            <br><hr>
-            <button class="button is-primary" style="margin-right: 15px" :disabled="!file" @click="parseCSV">Convert Uploaded CSV</button>
-            <button class="button is-info" :disabled="inputValues.length < 1" @click="parseTextArea">Convert Text</button>
+          <label>Prefix:</label>
+          <input type="text" class="input additional-input" v-model="portPrefix" placeholder="SOURCE">
+          <br>
+          <hr>
+
+          <button class="button is-primary" style="margin-right: 15px" :disabled="!file" @click="parseCSV">Convert CSV</button>
+          <button class="button is-info" :disabled="textareaInput.length < 1" @click="parseTextArea">Convert Text</button>
         </div>
       </div>
 
       <div class="column is-6 is-offset-1">
         <div v-if="sourceCode.length > 0" class="code">
           <h2>Generated Code</h2>
+          <hr>
           <p v-html="sourceCode"></p>
         </div>
       </div>
@@ -48,22 +50,22 @@
 </template>
 
 <script>
-import Papa from "papaparse";
+import Papa from 'papaparse';
 
 export default {
-  name: "VHDLGenerator",
+  name: 'VHDLGenerator',
   data() {
     return {
-      sourceCode: "",
-      inputValues: "",
-      addPrefix: false,
+      sourceCode: '',
+      textareaInput: '',
+      portPrefix: '',
       file: null,
       delay: 100
     };
   },
   methods: {
     loadCSV() {
-      this.file = document.getElementById("fileItem").files[0];
+      this.file = document.getElementById('fileItem').files[0];
     },
     parseCSV() {
       if (this.file) {
@@ -77,8 +79,8 @@ export default {
       }
     },
     parseTextArea() {
-      if (this.inputValues.length > 0) {
-        Papa.parse(this.inputValues, {
+      if (this.textareaInput.length > 0) {
+        Papa.parse(this.textareaInput, {
           complete: results => {
             // removes the parsed blank lines
             let data = results.data.filter(el => {
@@ -87,7 +89,7 @@ export default {
 
             // splits string of imput values into an array
             for (let i = 0; i < data.length; i++) {
-              data[i] = data[i][0].trim().split(" ");
+              data[i] = data[i][0].trim().split(' ');
             }
 
             // puts port name into the beginning of the corresponding array of inputs
@@ -109,14 +111,14 @@ export default {
       }
     },
     getSourceCode(data) {
-      let sourceCode = "";
-      let sourcePrefix = this.addPrefix ? "SOURCE_" : "";
+      let sourceCode = '';
+      let sourcePrefix = this.addPrefix ? 'SOURCE_' : '';
       let count = 1;
       while (count < data[0].length) {
         for (let i = 0; i < data.length; i++) {
-          sourceCode += `${sourcePrefix}${data[i][0]} <= '${data[i][count]}';`;
+          sourceCode += `${this.portPrefix}${data[i][0]} <= '${data[i][count]}';`;
           if (i != data.length - 1) {
-            sourceCode += " ";
+            sourceCode += ' ';
           }
         }
         count++;
@@ -129,18 +131,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.column {
-  margin: 0 auto;
-}
 
 .vhdl-generator {
   margin-top: 25px;
   width: 80%;
   font-size: 0.8rem;
-}
-
-.file {
-  margin-right: 30px;
 }
 
 label {
@@ -152,8 +147,8 @@ textarea {
   font-size: 0.7rem;
 }
 
-.number-input {
-  width: 4.5em;
+.additional-input {
+  width: 6em;
   margin-left: 15px;
   vertical-align: middle;
   font-size: 0.8rem;
