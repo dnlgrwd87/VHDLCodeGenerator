@@ -1,9 +1,9 @@
 This web app is targeted toward students at UNC Charlotte enrolled in Computer Architecture. The labs for this course require students manually convert values from input tables into source code that the simulation software can understand. The VHDL Code Generator provides two very easy ways to quickly convert the input values from the tables given in the lab instructions into the source code needed to simulate the circuits.
 
-The easiest way to convert the input values is to copy and paste directly from the lab instructions. If this fails for whatever reason, the fallback is to inputt he values into an Excel sheet, save as a CSV (comma delimited) and upload it.
+The easiest way to convert the input values is to copy and paste directly from the lab instructions, and make sure it is the format as seen in the example below. If this fails for whatever reason, the fallback is to input the values into an Excel sheet, save as a CSV (comma delimited) and upload it.
 
 To test this out, visit the site: https://vhdl-code-generator.firebaseapp.com/
-Copy and paste the following into the text area, and click convert text:
+Example: Copy and paste the following into the text area, and click convert text:
 
 A
 0 0 0 0 1 1 1 1
